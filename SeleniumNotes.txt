@@ -1,0 +1,778 @@
+Locators
+------------
+
+web element within the web page such as ID, Name, Class Name, Link Text, Partial Link Text,Tag Name and XPATH	
+
+1. How to initialize driver in selenium
+--------------------------------------
+
+System.setProperty("webdriver.chrome.driver","./drivers/chromedriver.exe")
+WebDriver driver = new ChromeDriver()
+
+ System.setProperty("webdriver.gecko.driver","C:\\geckodriver.exe")
+WebDriver driver = new FirefoxDriver();
+
+----
+Example,
+
+package newproject;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+//comment the above line and uncomment below line to use Chrome
+//import org.openqa.selenium.chrome.ChromeDriver;
+public class PG1 {
+
+
+    public static void main(String[] args) {
+        // declaration and instantiation of objects/variables
+    	System.setProperty("webdriver.gecko.driver","C:\\geckodriver.exe");
+		WebDriver driver = new FirefoxDriver();
+		//comment the above 2 lines and uncomment below 2 lines to use Chrome
+		//System.setProperty("webdriver.chrome.driver","G:\\chromedriver.exe");
+		//WebDriver driver = new ChromeDriver();
+    	
+        String baseUrl = "http://demo.guru99.com/test/newtours/";
+        String expectedTitle = "Welcome: Mercury Tours";
+        String actualTitle = "";
+
+        // launch Fire fox and direct it to the Base URL
+        driver.get(baseUrl);
+
+        // get the actual value of the title
+        actualTitle = driver.getTitle();
+
+        /*
+         * compare the actual title of the page with the expected one and print
+         * the result as "Passed" or "Failed"
+         */
+        if (actualTitle.contentEquals(expectedTitle)){
+            System.out.println("Test Passed!");
+        } else {
+            System.out.println("Test Failed");
+        }
+       
+        //close Fire fox
+        driver.close();
+       
+    }
+
+}
+
+2. GUI Commands
+-----------------
+
+1. To get tag name of the element.
+
+tagName = driver.findElement(By.id("email")).getTagName();
+
+2. Instead of using the long "driver.findElement(By.locator())" syntax every time you will access a particular element, we can instantiate a WebElement object for it. 
+
+WebElement myElement=driver.findelement(By.Id("username");
+myElement.sendKeys("Rama);
+
+3. Get commands
+get() 
+getTitle()
+getPageSource() 
+getCurrentUrl()
+getText() 
+
+4. Navigate commands
+navigate().to()  --->It does exactly the same thing as the get() method.
+navigate().refresh()
+navigate().back()
+navigate().forward()  -->takes you forward by one page on the browser's history.
+
+
+5. Closing commands
+close()
+quit()
+
+3. Handling Frame in WebPage
+---------------------------
+
+consider if we have 3 frames named frame1,frame2,frame3. and we need to access element in frame3 .
+
+First we should identofy the framenane and then we can idnetify the element using switchTo.frame() method.
+
+ex,
+
+driver.switchTo().frame("classFrame");
+	        driver.findElement(By.linkText("Deprecated")).click();
+
+4. Handling pop up in WebPage
+-----------------------------
+
+we must use the "switchTo().alert()" method. In the code below, we will use this method to access the alert box and then retrieve its message using the "getText()" method, and then automatically close the alert box using the "switchTo().alert().accept()" method.
+
+ex,
+String alertMessage = "";
+driver.findElement(By.cssSelector("input[value=\"Go!\"]")).click();
+        alertMessage = driver.switchTo().alert().getText();
+        driver.switchTo().alert().accept();
+       
+        System.out.println(alertMessage);
+
+5. Waits
+----------
+
+Implicit wait - used to set the default waiting time throughout the program
+Explicit wait - used to set the waiting time for a particular instance only
+
+Implicit Wait,
+
+ex
+
+driver.manage.timeouts().implicitliWait(10,TimeUnit.SECONDS);
+
+Explicit Wait,
+
+Explicit waits are done using the WebDriverWait and ExpectedCondition classes. For the following example, we shall wait up to 10 seconds for an element whose id is "username" to become visible before proceeding to the next command. Here are the steps.
+
+ex WebDriverWait ,
+
+Webdriver driver = new ChromeDriver();
+WebDriverWait wait=new WebDriverWait(driver,10);  //wait 10 seconds until chome loads
+
+ex ExpectedCondition ,
+
+wait.until(ExpectedConditions.VisibilityOfElementsLocated(By.Id("username")));
+driver.findElement(By.Id("username")).sendKeys("Rama");
+
+6.Conditional loops  Note --->always use NoSuchElementFoundException in try catch block
+---------------------
+
+isEnabled() is used when you want to verify whether a certain element is enabled or not before executing a command
+
+ex,
+
+WebElement user = driver.findElement(By.Id("username"));
+if(user.isEnabled())
+user.sendKeys("rama);
+
+isDisabled() is used when you want to verify whether a certain element is displayed or not before executing a command.
+
+do{something here}
+while(driver.findElement(By.Id("username").isDisabled());
+
+
+isDisplayed() is used when you want to verify whether a certain element is displayed or not before executing a command.
+
+do{something here}
+while(driver.findElement(By.Id("username").isDisabled());
+
+
+isSelected() is used when you want to verify whether a certain check box, radio button, or option in a drop-down box is selected. It does not work on other elements.
+
+if(driver.findElement(By.Id("username").isSelected())
+driver.findElement(By.Id("Rama").click()
+
+7.  ExpectedConditions --->always use TimeOutException in try catch block
+
+The ExpectedConditions class offers a wider set of conditions that you can use in conjunction with WebDriverWait's until() method.
+
+alertIsPresent() - waits until an alert box is displayed.
+
+ if (wait.until(ExpectedConditions.alertIsPresent())!=null)
+{
+Sysoum.out.println("Alert is present")
+
+
+elementToBeClickable() - Waits until an element is visible and, at the same time, enabled
+
+The sample code below will wait until the element with id="username" to become visible and enabled first before assigning that element as a WebElement variable named "txtUserName".
+
+
+WebElememt txtname=wait.until(ExpectedConditions.elementToBeClickable(By.Id("username")))
+-------------------
+
+Example of NoSuchElementFoundException and TimeOutException
+
+NoSuchElementFoundException 
+--------------------------
+WebElement txt_username=driver.findElement(By.Id("username"))
+try
+if(txt_username.isSelected())
+{
+txt_username.sendKeys("Rama");
+}
+catch(NoSuchElementFoundException nef)
+{
+System.out.println(nef.toString());
+}
+
+TimeOutException
+-----------------
+
+WebDriverWait wait=new WebDriverWait(driver, 5)
+try
+{
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.Id("username")))
+driver.findElement(By.Id("username")).sendKeys("Rama");
+}
+catch(TimeOutException toe)
+{
+System.out.println(toe.toStirng());
+}
+
+
+------------------
+
+Summary
+To start using the WebDriver API, you must import at least these two packages.
+org.openqa.selenium.*
+org.openqa.selenium.firefox.FirefoxDriver
+The get() method is the equivalent of Selenium IDE's "open" command.
+Locating elements in WebDriver is done by using the findElement() method.
+The following are the available options for locating elements in WebDriver:
+By.className
+By.cssSelector
+By.id
+By.linkText
+By.name
+By.partialLinkText
+By.tagName
+By.xpath
+The By.cssSelector() does not support the "contains" feature.
+You can instantiate an element using the WebElement class.
+Clicking on an element is done by using the click() method.
+WebDriver provides these useful get commands:
+get()
+getTitle()
+getPageSource()
+getCurrentUrl()
+getText()
+WebDriver provides these useful navigation commands
+navigate().forward()
+navigate().back()
+navigate().to()
+navigate().refresh()
+The close() and quit() methods are used to close browser windows. Close() is used to close a single window; while quit() is used to close all windows associated to the parent window that the WebDriver object was controlling.
+The switchTo().frame() and switchTo().alert() methods are used to direct WebDriver's focus onto a frame or alert, respectively.
+Implicit waits are used to set the waiting time throughout the program, while explicit waits are used only on specific portions.
+You can use the isEnabled(), isDisplayed(),isSelected(), and a combination of WebDriverWait and ExpectedConditions methods when verifying the state of an element. However, they do not verify if the element does not exists.
+When isEnabled(), isDisplayed(),or isSelected() was called while the element was not existing, WebDriver will throw a NoSuchElementException.
+When WebDriverWait and ExpectedConditions methods were called while the element was not existing, WebDriver would throw a TimeoutException. 
+Note:
+
+driver.get() : It's used to go to the particular website , But it doesn't maintain the browser History and cookies so , we can't use forward and backward button , if we click on that , page will not get schedule
+
+driver.navigate() : it's used to go to the particular website , but it maintains the browser history and cookies, so we can use forward and backward button to navigate between the pages during the coding of Testcase
+
+
+8. FindElement and FindElements difference
+
+Findelement is use to find an unique element in a webpage using certain propertise such as ID or name whereas findElements is used to find the multiple elements in a web page.
+
+please note, To clear the values in Textbox. use. txt_usernane.clear();
+
+ex,
+
+List<WebElement> listofElements  = dirver.findElements(By.xpath("//div"));
+
+	java.util.List<WebElement> elements = driver.findElements(By.name("name"));
+		System.out.println("Number of elements:" + elements.size());
+		for (int i = 0; i < elements.size(); i++) {
+			System.out.println("Radio button text:" + elements.get(i).getAttribute("value"));
+		}
+
+9. Image in Selenium Webdriver
+	we can using either By.cssSelector or By.xpath. The first method is more preferred because of its simplicity.
+ex,
+String baseUrl = "https://www.facebook.com/login/identify?ctx=recover";	
+	driver.findElement(By.cssSelector("a[title=\"Go to Facebook home\"]")).click();					
+
+				//verify that we are now back on Facebook's homepage		
+				if (driver.getTitle().equals("Facebook - log in or sign up")) {							
+	            System.out.println("We are back at Facebook's homepage");					
+	        } else {			
+	            System.out.println("We are NOT in Facebook's homepage");					
+	        }		
+					driver.close();		
+
+
+10. Working on Dropdowns
+
+To handle drop down, we need to use select class.
+
+By using selectByVisibleText() method in selecting multiple options in multi SELECT element.
+
+ex,
+
+Select fruit=new Select(driver.findElement(By.id("Fruits")))
+fruit.selectByVisibleText("Banana");
+fruit.selectByIndex(2);
+friut.deselectByVisibleText("Apple");
+fruit.selectByValue("243");
+
+
+methods,
+
+deselectByIndex("233");
+deSelectAll();
+
+
+11. Handling LinkText and partial link text
+
+Use, By.LinkText("Google").click;
+By.PartialLinkText("go").click();
+
+Note, when handling Multiple links with the same Link Text,
+
+locators viz... By.xpath(), By.cssSelector() or By.tagName() are used.
+
+Most commonly used is By.xpath(). It is the most reliable one but it looks complex and non-readable too, since link text are case sensitive.
+
+
+
+ex,
+driver.findElement(By.partialLinkText("rigister")).click();
+driver.findElement(By.partialLinkText("REGISTER")).click();
+
+To access inner and outer linkText,
+
+driver.findElement(By.partialLinkText("rigister")).click();
+driver.navigate.back();
+driver.findElement(By.partialLinkText("REGISTER")).click();
+
+
+findElements() & By.tagName("a") method finds all the elements in the page matching the locator criteria
+
+
+12. Handling Keyboard & Mouse Events
+
+Handling special keyboard and mouse events are done using the Advanced User Interactions API. It contains the Actions and the Action classes
+
+clickAndHold()			Clicks (without releasing) at the current mouse location.
+contextClick()			Performs a context-click at the current mouse location. (Right Click Mouse Action)
+doubleClick()			Performs a double-click at the current mouse location.
+dragAndDrop(source, target)	Performs click-and-hold at the location of the source element, moves to the location of the 				target element, then releases the mouse.
+
+				Parameters:
+
+				source- element to emulate button down at.
+				target- element to move to and release the mouse at.
+
+dragAndDropBy(source, x-offset, y-offset)	- Performs click-and-hold at the location of the source element, moves by a 							given offset, then releases the mouse.
+
+
+
+keyDown(modifier_key)	Performs a modifier key press. Does not release the modifier key - subsequent interactions may assume it's kept pressed.
+
+Parameters:
+
+modifier_key - any of the modifier keys (Keys.ALT, Keys.SHIFT, or Keys.CONTROL)
+keyUp(modifier _key)	Performs a key release.
+
+Parameters:
+
+modifier_key - any of the modifier keys (Keys.ALT, Keys.SHIFT, or Keys.CONTROL)
+moveByOffset(x-offset, y-offset)	Moves the mouse from its current position (or 0,0) by the given offset.
+
+Parameters:
+
+x-offset- horizontal offset. A negative value means moving the mouse left.
+
+y-offset- vertical offset. A negative value means moving the mouse down.
+moveToElement(toElement)	Moves the mouse to the middle of the element.
+
+Parameters:
+
+toElement- element to move to.
+release()	Releases the depressed left mouse button at the current mouse location
+sendKeys(onElement, charsequence)	Sends a series of keystrokes onto the element.
+
+Parameters:
+
+onElement - element that will receive the keystrokes, usually a text field
+
+charsequence - any string value representing the sequence of keystrokes to be sent
+
+13. Uploading and Downloading
+
+For uploading, use sendKey().click() method
+
+for downloading, use wget
+
+download wget application, 
+
+
+14. Xpath
+
+Xpath is  xml path , where there is no locators to find an element , we need to use xpath, it can either used to find normal element as well as dynamic elements
+
+Systax, //tagname[@attribute='value']
+
+Absplute xpath is it can traverse through HTML DOM starting from HTML tag to the end of the tag element.
+Relative xpath is to find an element anywhere in the DOM dorectly based on it's matches on search criteria.
+
+example
+//*[@class='featured-box']//*[text()='Testing']	
+//input[@id='ram123']
+//label[@type='text']
+//input[@value='RESET']
+//*[@class='born']
+//a[@href='www.google.com/']
+//img[@src='//cdn.guru99.com/images/java.png']
+
+Note, use contains()  method when the value of any attribute changes dynamically.
+
+contains()
+-----------
+
+ex,
+
+//*[contain(@type,'sub')]
+
+//*[contains(@name,'btn')]
+
+
+OR & AND,
+----------
+//*[@class='born' OR  OR @class='born']
+
+
+starts-with funtion,
+----------------------
+
+//lebel[starts-with(@id,'message')]
+
+Text match,
+---------------
+
+//td[text()='userID']
+
+Xpath axes methods,
+
+Following 
+------------
+
+//*[@type='text']//following::input[1]
+
+Ancester
+----------
+
+Xpath=//*[text()='Enterprise Testing']//ancestor::div[1]
+
+It search immediate upper element  of text "Enterprice Testing"  , we can give any number like div[2],div[3] so on.
+
+Child
+---------
+
+Xpath=//*[@id='java_technologies']//child::li[1]
+
+Preseeding
+-----------
+
+Xpath=//*[@type='submit']//preceding::input[1]
+
+Following - sibling
+---------------------
+
+xpath=//*[@type='submit']//following-sibling::input[1]
+
+Parent
+--------
+
+Xpath=//*[@id='rt-feature']//parent::div[1]
+
+Self
+-----
+Selects the current node or 'self' means it indicates the node itself 
+
+Xpath =//*[@type='password']//self::input
+
+
+Descendant
+----------
+
+
+ it identifies all the element descendants to current element ( 'Main body surround' frame element) which means down under the node (child node , grandchild node, etc.).
+
+
+Xpath=//*[@id='rt-feature']//descendant::a[1]
+
+15. Alerts and pop up window handling
+
+Simple alert
+prompt alert
+confirmation alert
+
+
+Methods
+--------
+
+dismiss()
+accept()
+getText()  to capture the alert text message
+sendKeys(String tosend)
+
+
+systax,
+
+driver.swoitchTo.alert.dismiss();
+
+
+
+16. handling Selenium Pop-up window using Webdriver
+
+In automation, when we have multiple windows in any web application, the activity may need to switch control among several windows from one to other in order to complete the operation. After completion of the operation, it has to return to the main window i.e. parent window. 
+
+Driver.getWindowHandles();
+
+To handle all opened windows by web driver, we can use "Driver.getWindowHandles()" and then we can switch window from one window to another in a web application. Its return type is Iterator<String>.
+
+Driver.getWindowHandle();
+
+When the site opens, we need to handle the main window by driver.getWindowHandle(). This will handle the current window that uniquely identifies it within this driver instance. Its return type is String.
+
+
+17. Working on web tables
+
+1. static table  - row and columns are fixed
+2. Dynamic table - rows and columnds are dynamically change
+
+
+use xpath to find an element in web table
+
+it should start from //table/tbody/tr/td
+
+if 2nd row tr[2]
+if 2nd td td[2]
+
+if nested table,
+
+//table/tbody/tr[2]/td[2]/table/tr[2]/td[2]
+
+use getText() to find inner text.
+
+
+predicate
+-------
+
+if the element , you want to find that is avilable deep inner table,  then use predicate.
+
+
+ex //table[@width=\"270\"]/tbody/tr[4]/td
+
+
+Dynamic web tables
+--------------
+
+When the table is dynamic in nature, we cannot predict its number of rows and columns.so first we need to find number of Rows and columns of web table
+•X row or Y column's data.
+
+
+
+Using X-Path to Locate Web Table Elements ,
+
+//*[@id="leftcontainer"]/table/thead/tr/th[1]
+
+List  col = wd.findElements(By.xpath(".//*[@id=\"leftcontainer\"]/table/thead/tr/th"));
+
+
+
+
+Summary
+---------------
+By.xpath() is commonly used to access table elements.
+Static web tables are consistent in nature. i.e. they do have fixed number of rows as well as Cell data.
+Dynamic web tables are inconsistent i.e. they do not have fixed number of rows and cells data.
+Using selenium web driver, we can handle dynamic web tables easily.
+Selenium Webdriver allows us to access dynamic web tables by their X-path
+
+
+17. Disired capabolities
+
+
+It is series of of key/value pairs that stores the browser properties like browsername, browser version, the path of the browser driver in the system, etc. to determine the browser capabilities of the browser at run time.
+
+
+Desired capability can also be used to configure the driver instance of Selenium WebDriver.
+We can configure driver instance like FirefoxDriver, ChromeDriver, InternetExplorerDriver by using desired capabilities
+
+
+Desired capabilities tell web driver to run on which environment (mobile/desktop) or in which browser.this can help in parrell execution as well when using selenium grid.
+
+Different types of Desired Capabilities Methods
+Here we will see a different type of desired capabilities methods and see how to use one of this method "setCapability Method".
+
+getBrowserName()
+public java.lang.String getBrowserName()
+setBrowserName()
+public void setBrowserName(java.lang.String browserName)
+getVersion()
+public java.lang.String getVersion()
+setVersion()
+public void setVersion(java.lang.String version)
+getPlatform()
+public Platform getPlatform()
+setPlatform()
+public Platform setPlatform()
+getCapability Method
+The getCapability method of the DesiredCapabilities class can be used to get the capability that is in use currently in the system.
+
+public java.lang.Object getCapability(java.lang.String capabilityName)
+setCapabilityMethod
+The setCapability() method of the Desired Capabilities class can be used to set the device name, platform version, platform name, absolute path of the app under test (the .apk file of the app(Android) under test), app Activity (in Android) and appPackage(java).
+
+
+18. Handling ToolTip Text
+
+For other forms of tooltip implementations, we will have to use the "Advanced User Interactions API" provided by the Web Driver to create the mouse hover effect and then retrieve the tooltip for the element
+
+The tooltip is a text that appears when a mouse hovers over an object like a link, an image, a button, text area, etc. in a web page. The text often gives more information about the object on which it appears.
+
+we can use JavaScript/JQuery plugins or using CSS Tooltips pluggin to identify.
+
+For static tooltips which are implemented using the HTML "title" attribute, we can simply use the getAttribute("title") method of the WebElement.
+
+
+Advanced User Interactions API provides the API for user actions like drag and drop, hovering, multi selecting, key press and release and other actions using keyboard or mouse on a webpage.
+
+In order to use the API, the following packages/classes needs to be imported:
+
+Step 2) Create an object of "Actions" class and build the Sequence of user actions. Actions class is used to build the sequence of user actions like moveToElement(), dragAndDrop() etc. Various methods related to user actions are provided by API.
+
+The driver object is provided as a parameter to its constructor
+
+example,
+
+Actions builder=Actions(dirver);
+builder.clickAndHold(slider).moveOffSet(50,0).release();
+
+
+Step 3) Create an Action Object using the build() method of "Actions" class. Call the perform() method to execute all the actions built by the Actions object(builder here).
+
+
+
+Action slideAction=builder.build();
+slide.perform();
+
+Scenario 1: Tooltip is implemented using the "title" attribute
+Scenario 2: Tooltip is implemented using a jQuery plugin.
+
+
+Basic Tool tip
+
+In order to do it, we will first find the element and get its 'title' attribute and verify with the expected tool tip text.
+
+Since, we are assuming the tool tip is in the "title" attribute, we are not even automating the mouse hover effect but simply retrieving the attribute's value using the "getAttribute()" method.
+
+Dynamic ToolTip
+
+There are a plenty of JQuery plugins available to implement the tooltips, and each one has a slightly different form of implementation.
+
+Some plugins expect the tooltip HTML to be present all the time next to the element for which the tooltip is applicable whereas the others create a dynamic "div" tag, which appears on the fly while hovering over the element.
+
+
+Code Explanation
+
+Find the WebElement that corresponds to the element "download now" that we will mouse-hover.
+Using the Interactions API, mouse hover on to the "Download now".
+Assuming the tooltip is displayed, find the WebElement that corresponds to the link inside the tooltip i.e. the "a" tag.
+Verify the link's tooltip text retrieved using the getText() against an expected value we have stored in "expectedToolTip"
+Summary:
+In this tutorial, you have learnt how to access Tooltips using Selenium Web driver.
+
+Tool Tips are implemented in different ways –
+The basic implementation is based on HTML's "title" attribute. getAttribute(title) gets the value of the tooltip.
+Other tool tip implementation's like JQuery, CSS tooltips require Interactions API to create mouse hover effect
+Advanced User Interactions API
+moveToElement(element) of Actions class is used to mouse hover an element.
+Build() method of Actions class builds the sequence of user actions into an Action object.
+Perform() of Action class executes all the sequence of user actions at once.
+In order to verify a tooltip, we have to first mouse-hover the element, then find the element that corresponds to the tool tip and get its text or other values to verify against the expected values.
+
+
+
+
+19. Handling Broken Links
+
+Broken link the links or URL that are not reachable or application may dowm due to some server error.
+
+An URL will always have a status with 2xx which is valid. There are different HTTP status codes which are having different purposes. For an invalid request, HTTP status is 4xx and 5xx.
+
+4xx class of status code is mainly for client side error, and 5xx class of status codes is mainly for the server response error.
+
+We will most likely be unable to confirm if that link is working or not until we click and confirm it.
+
+
+How to check the Broken Links and images
+---------------------------------------------
+For checking the broken links, you will need to do the following steps.
+
+Collect all the links in the web page based on <a> tag.
+Send HTTP request for the link and read HTTP response code.
+Find out whether the link is valid or broken based on HTTP response code.
+Repeat this for all the links captured.
+
+Explaining the code Example
+Step 1: Import Packages
+Import below package in addition to default packages:
+
+import java.net.HttpURLConnection;
+Using the methods in this package, we can send HTTP requests and capture HTTP response codes from the response.
+
+Step 2: Collect all links in web page
+Identify all links in a webpage and store them in List.
+
+List<WebElement> links = driver.findElements(By.tagName("a"));
+Obtain Iterator to traverse through the List.
+
+Iterator<WebElement> it = links.iterator();
+Step 3: Identifying and Validating URL
+In this part, we will check if URL belongs to Third party domain or whether URL is empty/null.
+
+Get href of anchor tag and store it in url variable.
+
+
+url = it.next().getAttribute("href");
+Check if URL is null or Empty and skip the remaining steps if the condition is satisfied.
+
+if(url == null || url.isEmpty()){
+              System.out.println("URL is either not configured for anchor tag or it is empty");
+              continue;
+     }
+Check whether URL belongs to a main domain or third party. Skip the remaining steps if it belongs to third party domain.
+
+ if(!url.startsWith(homePage)){
+           System.out.println("URL belongs to another domain, skipping it.");
+           continue;
+   }
+Step 4: Send http request
+HttpURLConnection class has methods to send HTTP request and capture HTTP response code. So, output of openConnection() method (URLConnection) is type casted to HttpURLConnection.
+
+huc = (HttpURLConnection)(new URL(url).openConnection());
+We can set Request type as "HEAD" instead of "GET". So that only headers are returned and not document body.
+
+huc.setRequestMethod("HEAD");
+On invoking connect() method, actual connection to url is established and the request is sent.
+
+huc.connect();
+Step 5: Validating Links
+Using getResponseCode() method we can get response code for the request
+
+respCode = huc.getResponseCode();
+Based on response code we will try to check link status.
+
+if(respCode >= 400){
+        System.out.println(url+" is a broken link");
+}
+else{
+        System.out.println(url+" is a valid link");
+}
+Thus, we can obtain all links from web page and print whether links are valid or broken.
+
+
+How to get ALL Links of a Web Page
+---------------------------------
+
+
+One of the common procedures in web Testing is to test if all the links present within the page are working. This can be conveniently done using a combination of the Java for-each loop, findElements() & By.tagName("a") method.
+
+The findElements() method, returns a list of Web Elements with tag a. Using a for-each loop, each element is accessed.
+
+
+TroubleShooting
+In an isolated case, the first link accessed by the code could be the "Home" Link. In such case, driver.navigate.back() action will show a blank page as the 1st action is opening a browser. The driver will not be able to find all other links in a blank browser. So IDE will throw an exception and rest of the code will not execute. This can be easily handled using an If loop

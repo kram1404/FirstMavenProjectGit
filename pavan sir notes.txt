@@ -1,0 +1,66 @@
+pavaninfo
+
+----------------
+
+https://infosys.webex.com/meet/kumaravelan.b
+
+15043 upfront tax texas
+
+https://github.com/angiejones?tab=repositories
+------
+Testing and Automation help information
+
+http://www.pavantestingtools.com/
+
+http://www.pavantestingtools.com/p/selenium.html
+Channel Link: https://goo.gl/2XKXRB
+
+https://github.com/pavanoltraining
+
+Domain knowledge
+
+http://www.pavantestingtools.com/p/domain-skills_14.html
+
+
+Seems like as long as you update the pom.xml with
+<properties> <maven.compiler.source>1.6</maven.compiler.source> <maven.compiler.target>1.6</maven.compiler.target> </properties
+
+http://www.pavantestingtools.com/p/introduction-to-java-programming.html
+
+
+----------------
+
+
+
+<properties> 
+<maven.compiler.source>1.6</maven.compiler.source>
+<maven.compiler.target>1.6</maven.compiler.target>
+</properties>
+
+<!-- Plug-ins required for executing Tests  -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M4</version>
+				
+				<configuration>
+					<suiteXmlFiles>
+						<!-- TestNG suite XML files -->
+						<suiteXmlFile>testng.xml</suiteXmlFile>
+					</suiteXmlFiles>
+				</configuration>
+			</plugin>
+		
+		</plugins>
+	
+	</build>
